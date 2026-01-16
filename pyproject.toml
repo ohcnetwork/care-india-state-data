@@ -1,0 +1,46 @@
+[project]
+name = "care-india-state-data"
+version = "0.1.0"
+description = "Indian govt state and lsg data for CARE"
+readme = "README.md"
+authors = [
+  {name = "Open Healthcare Network", email = "support@ohc.network"}
+]
+maintainers = [
+  {name = "Open Healthcare Network", email = "support@ohc.network"}
+]
+classifiers = [
+    # TODO
+]
+license = {text = "MIT"}
+dependencies = []
+requires-python = ">= 3.10"
+
+
+
+[project.urls]
+bugs = "https://github.com/ohcnetwork/care_india_state_data/issues"
+changelog = "https://github.com/ohcnetwork/care_india_state_data/blob/master/changelog.md"
+homepage = "https://github.com/ohcnetwork/care_india_state_data"
+
+
+[tool.ty]
+# All rules are enabled as "error" by default; no need to specify unless overriding.
+# Example override: relax a rule for the entire project (uncomment if needed).
+# rules.TY015 = "warn"  # For invalid-argument-type, warn instead of error.
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # Pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+]
+
+[tool.uv]
+package = true
