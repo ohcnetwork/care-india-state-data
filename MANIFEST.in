@@ -6,3 +6,4 @@ recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
 
 recursive-include docs *.md Makefile *.jpg *.png *.gif
+recursive-include src/care_india_state_data/data *.json
