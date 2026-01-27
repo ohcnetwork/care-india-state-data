@@ -11,7 +11,7 @@ This package provides a script to load Indian government organization data (stat
 Install directly from GitHub:
 
 ```bash
-pip install git+https://github.com/ohcnetwork/care_india_state_data.git
+pip install git+https://github.com/ohcnetwork/care-india-state-data.git
 ```
 
 ## Usage
