@@ -14,6 +14,12 @@ Install directly from GitHub:
 pip install git+https://github.com/ohcnetwork/care-india-state-data.git
 ```
 
+Or install from a specific release:
+
+```bash
+pip install https://github.com/ohcnetwork/care-india-state-data/releases/download/<version>/care_india_state_data-<version>-py3-none-any.whl
+```
+
 ## Usage
 
 The package includes a standalone script that can be run to load government organization data into your Django database.
