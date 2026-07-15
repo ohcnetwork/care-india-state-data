@@ -202,16 +202,22 @@ class GovtOrgLoader:
                 )
             )
             local_body_objs = []
+            seen = set()
             for local_body in local_body_list:
                 if not local_body["district"]:
                     continue
                 dist_obj: Organization = get_district(local_body["state"], local_body["district"])
                 if not dist_obj:
                     continue
+                name = get_local_body_name(local_body)
+                key = (dist_obj.id, name)
+                if key in seen:
+                    continue
+                seen.add(key)
                 local_body_objs.append(
                     Organization(
                         root_org=dist_obj.parent,
-                        name=get_local_body_name(local_body),
+                        name=name,
                         parent=dist_obj,
                         org_type="govt",
                         level_cache=2,
@@ -227,8 +233,19 @@ class GovtOrgLoader:
                         },
                     )
                 )
-            count = Organization.objects.bulk_create(local_body_objs)
-            logger.debug("Created %s local bodies", len(count))
+            existing = set(
+                Organization.objects.filter(
+                    parent_id__in={o.parent_id for o in local_body_objs},
+                    level_cache=2,
+                ).values_list("parent_id", "name")
+            )
+            to_create = [o for o in local_body_objs if (o.parent_id, o.name) not in existing]
+            count = Organization.objects.bulk_create(to_create)
+            logger.debug(
+                "Created %s local bodies (skipped %s existing)",
+                len(count),
+                len(local_body_objs) - len(to_create),
+            )
 
         for state_dir in state_dirs:
             local_bodies = []
@@ -256,13 +273,24 @@ class GovtOrgLoader:
                         if not local_body:
                             continue
                         wards.sort(key=lambda x: get_ward_name(x) + str(get_ward_number(x)))
+                        existing_wards = set(
+                            Organization.objects.filter(
+                                parent=local_body,
+                                level_cache=3,
+                            ).values_list("name", flat=True)
+                        )
                         ward_objs = []
+                        seen = set()
                         for ward in wards:
+                            ward_name = get_ward_name(ward)
+                            if ward_name in existing_wards or ward_name in seen:
+                                continue
+                            seen.add(ward_name)
                             ward_objs.append(
                                 Organization(
                                     root_org=local_body.root_org,
                                     parent=local_body,
-                                    name=get_ward_name(ward),
+                                    name=ward_name,
                                     org_type="govt",
                                     system_generated=True,
                                     level_cache=3,
